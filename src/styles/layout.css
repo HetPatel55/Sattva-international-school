@@ -441,36 +441,18 @@
   color: rgba(255, 255, 255, 0.82);
 }
 
-.cta-section {
-  position: relative;
-  overflow: hidden;
-}
-
-.cta-section > .container {
-  position: relative;
-}
-
-/* Scattered logo marks: kept in the section's padding (above/below the band)
-   on small screens, and spread into the side margins on wide screens */
-.cta-scatter {
+/* Faint SATTVA logo watermark, fully inside the band (never clipped) */
+.cta-band__watermark {
   position: absolute;
-  inset: 0;
+  top: 50%;
+  left: 50%;
+  width: min(78%, 620px);
+  height: auto;
+  transform: translate(-50%, -50%);
+  opacity: 0.07;
   pointer-events: none;
+  user-select: none;
 }
-
-.cta-scatter__item {
-  position: absolute;
-  opacity: 0.85;
-}
-
-.cta-scatter__1 { top: 14px; left: 7%; width: 26px; transform: rotate(-12deg); }
-.cta-scatter__2 { top: 22px; left: 46%; width: 16px; transform: rotate(10deg); }
-.cta-scatter__3 { top: 12px; right: 9%; width: 22px; transform: rotate(8deg); }
-.cta-scatter__4 { bottom: 14px; left: 18%; width: 20px; transform: rotate(14deg); }
-.cta-scatter__5 { bottom: 18px; left: 62%; width: 16px; transform: rotate(-8deg); }
-.cta-scatter__6 { bottom: 10px; right: 5%; width: 28px; transform: rotate(-6deg); }
-.cta-scatter__7,
-.cta-scatter__8 { display: none; }
 
 .cta-band__text {
   position: relative;
@@ -509,22 +491,6 @@
     gap: 3rem;
     padding: 3.5rem 4rem;
   }
-
-  .cta-scatter__1 { top: 26px; width: 38px; }
-  .cta-scatter__2 { top: 40px; width: 20px; }
-  .cta-scatter__3 { top: 22px; width: 30px; }
-  .cta-scatter__4 { bottom: 28px; width: 28px; }
-  .cta-scatter__5 { bottom: 34px; width: 20px; }
-  .cta-scatter__6 { bottom: 20px; width: 40px; }
-}
-
-/* Side marks only where the margin beside the band is wide enough */
-@media (min-width: 1640px) {
-  .cta-scatter__7,
-  .cta-scatter__8 { display: block; }
-
-  .cta-scatter__7 { top: 42%; left: calc(50% - var(--container) / 2 - 92px); width: 48px; transform: rotate(8deg); }
-  .cta-scatter__8 { top: 30%; right: calc(50% - var(--container) / 2 - 84px); width: 34px; transform: rotate(-14deg); }
 }
 
 /* ---------- Page loader ---------- */
