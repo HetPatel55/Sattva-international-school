@@ -441,15 +441,19 @@
   color: rgba(255, 255, 255, 0.82);
 }
 
-/* Faint SATTVA logo watermark, fully inside the band (never clipped) */
+/* SATTVA logo watermark. Mobile first: it gets its own row under the
+   buttons (no text on top of it), with a hairline to separate it */
 .cta-band__watermark {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: min(78%, 620px);
+  order: 3;
+  justify-self: center;
+  width: 100%;
+  max-width: 300px;
   height: auto;
-  transform: translate(-50%, -50%);
-  opacity: 0.07;
+  margin-top: 0.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: content-box;
+  opacity: 0.22;
   pointer-events: none;
   user-select: none;
 }
@@ -490,6 +494,20 @@
     align-items: center;
     gap: 3rem;
     padding: 3.5rem 4rem;
+  }
+
+  /* Wide screens have room for it as a faint backdrop behind the content */
+  .cta-band__watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(78%, 620px);
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    transform: translate(-50%, -50%);
+    opacity: 0.07;
   }
 }
 
