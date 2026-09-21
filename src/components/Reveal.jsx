@@ -1,14 +1,34 @@
-import { useScrollReveal } from '../hooks/useScrollReveal';
+import { useEffect, useRef, useState } from 'react';
 
-// Wraps a section's content so it fades/rises in once scrolled to, reusing
-// the existing fadeIn keyframe and delay-100/200/300 utility classes.
-const Reveal = ({ children, className = '', delay, as: Tag = 'div', ...rest }) => {
-  const [ref, isVisible] = useScrollReveal();
-  const delayClass = delay ? ` delay-${delay}` : '';
-  const revealClass = isVisible ? ` animate-fade-in${delayClass}` : '';
+// Fades its content in the first time it scrolls into view.
+const Reveal = ({ as: Tag = 'div', className = '', delay = 0, children, ...rest }) => {
+  const ref = useRef(null);
+  // Browsers without IntersectionObserver simply show the content straight away
+  const [visible, setVisible] = useState(() => !('IntersectionObserver' in window));
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || visible) return undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [visible]);
 
   return (
-    <Tag ref={ref} className={`scroll-reveal ${className}${revealClass}`} {...rest}>
+    <Tag
+      ref={ref}
+      className={`reveal${visible ? ' is-visible' : ''} ${className}`}
+      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+      {...rest}
+    >
       {children}
     </Tag>
   );

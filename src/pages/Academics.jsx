@@ -1,170 +1,194 @@
-import { BookOpen, Backpack, FlaskConical, GraduationCap, Palette, Music2, Swords, Dumbbell, Activity, Flower2, Monitor, Globe2, Calendar as CalendarIcon, HeartHandshake } from 'lucide-react';
-import PageHeader from '../components/PageHeader';
+import { Link } from 'react-router-dom';
+import { Check, Landmark, Languages, Split, FlaskConical, BarChart3, Laptop, ArrowRight } from 'lucide-react';
+import { school, stages, activities, quotes } from '../data/site';
+import usePageMeta from '../hooks/usePageMeta';
+import PageHero from '../components/PageHero';
+import SectionHead from '../components/SectionHead';
 import Reveal from '../components/Reveal';
-import './Academics.css';
+import QuoteBand from '../components/QuoteBand';
+import CtaBand from '../components/CtaBand';
+
+const overview = [
+  { icon: Landmark, tone: 'red', title: 'GSEB curriculum', text: `Affiliated with the ${school.boardFull}, with board examinations in Std 10 and Std 12.` },
+  { icon: Languages, tone: 'green', title: 'English & Gujarati medium', text: 'Every standard is offered in both mediums, so families can choose what suits their child.' },
+  { icon: Split, tone: 'blue', title: 'Science & Commerce', text: 'Two streams in Std 11 and 12, each with focused subjects and dedicated teachers.' },
+];
+
+const streams = [
+  {
+    name: 'Science',
+    icon: FlaskConical,
+    tone: 'purple',
+    subjects: ['Physics', 'Chemistry', 'Mathematics', 'Biology'],
+    text: 'Theory and regular practicals in our dedicated physics, chemistry and biology labs.',
+  },
+  {
+    name: 'Commerce',
+    icon: BarChart3,
+    tone: 'orange',
+    subjects: ['Accountancy', 'Economics', 'Statistics', 'Organisation of Commerce & Management'],
+    text: 'A strong grounding in business, finance and economics.',
+  },
+];
+
+const computerTopics = ['Computer fundamentals', 'History of computers', 'MS Word', 'MS Excel', 'Paint', 'HTML & CSS basics'];
 
 const Academics = () => {
-  const programs = [
-    { icon: <BookOpen className="program-icon" />, title: "Pre-Primary", desc: "JrKG & SrKG — playful, activity-based learning that builds curiosity, motor skills, and a lifelong love of school." },
-    { icon: <Backpack className="program-icon" />, title: "Primary", desc: "Balvatika to Std 8. Builds foundational reading, writing, mathematical literacy, and cognitive thinking." },
-    { icon: <FlaskConical className="program-icon" />, title: "Secondary", desc: "Std 9 & 10 with a rich curriculum aligned with GSEB standards, preparing students for board examinations." },
-    { icon: <GraduationCap className="program-icon" />, title: "Higher Secondary", desc: "Std 11 & 12 with Science and Commerce streams, each with focused subjects and dedicated faculty." },
-  ];
-
-  const cocurriculars = [
-    { icon: <Palette />, title: "Drawing & Arts" },
-    { icon: <Music2 />, title: "Dance" },
-    { icon: <Swords />, title: "Karate" },
-    { icon: <Dumbbell />, title: "Physical Training" },
-    { icon: <Activity />, title: "Skating" },
-    { icon: <Flower2 />, title: "Yoga & Meditation" },
-    { icon: <Monitor />, title: "Computer" }
-  ];
-
-  const supportServices = [
-    {
-      title: "Academic Tutoring",
-      desc: "One-on-one and group tutoring sessions available after school for all subjects.",
-      icon: <BookOpen size={32} />
-    },
-    {
-      title: "Stream & Career Guidance",
-      desc: "Dedicated advisors help students choose between Science and Commerce at Std 11, and plan their path ahead.",
-      icon: <Globe2 size={32} />
-    },
-    {
-      title: "Mental Health Support",
-      desc: "On-campus counselors available for emotional and psychological well-being.",
-      icon: <HeartHandshake size={32} />
-    }
-  ];
+  usePageMeta('Academics', `GSEB academics at ${school.name} — JrKG, SrKG, Balvatika, Std 1–12, Science and Commerce, English and Gujarati medium.`);
 
   return (
-    <div className="academics-page animate-fade-in">
-      <PageHeader
-        title="Academics at SATTVA"
-        subtitle="A GSEB-affiliated curriculum from JrKG to Std 12, offered in both English and Gujarati medium."
-        image="https://images.unsplash.com/photo-1519337265831-2811a7fcaeb6?auto=format&fit=crop&q=80&w=1920"
-        alt="Academics"
-      />
+    <>
+      <PageHero
+        eyebrow="Academics"
+        title="JrKG to Std 12, the GSEB way"
+        lead="A complete school journey under one roof — in English or Gujarati medium, with Science and Commerce in Std 11 and 12."
+      >
+        <nav className="jump-links" aria-label="Jump to a stage">
+          {stages.map((s) => (
+            <a key={s.id} href={`#${s.id}`} className={`jump-link tone-${s.tone}`}>
+              {s.name}
+            </a>
+          ))}
+        </nav>
+      </PageHero>
 
-      {/* Quote */}
-      <section className="section quote-section text-center">
+      {/* ---------- Overview ---------- */}
+      <section className="section section--white">
         <div className="container">
-          <blockquote className="legend-quote">
-            "Teachers should be the best minds in the country."
-          </blockquote>
-          <p className="legend-quote-author">— Dr. Sarvepalli Radhakrishnan</p>
+          <ul className="overview-grid">
+            {overview.map((o, i) => {
+              const Icon = o.icon;
+              return (
+                <Reveal as="li" key={o.title} className={`overview-card tone-${o.tone}`} delay={i * 80}>
+                  <span className="icon-badge"><Icon size={22} aria-hidden="true" /></span>
+                  <h2>{o.title}</h2>
+                  <p>{o.text}</p>
+                </Reveal>
+              );
+            })}
+          </ul>
         </div>
       </section>
 
-      {/* Programs Grid */}
-      <section className="section programs-section">
+      {/* ---------- Stages ---------- */}
+      <section className="section">
         <div className="container">
-          <Reveal className="section-header text-center">
-            <h2 className="section-title">Our Academic Programs</h2>
-            <p className="section-subtitle">A balanced blend of theory, practice, and creativity.</p>
-          </Reveal>
-          <Reveal className="grid grid-2 grid-4-lg programs-grid" delay={100}>
-            {programs.map((p, i) => (
-              <div key={i} className="program-card glass hover-lift">
-                <div className="program-icon-wrapper">
-                  {p.icon}
-                </div>
-                <div className="program-text">
-                  <h3 className="program-title">{p.title}</h3>
-                  <p className="program-desc">{p.desc}</p>
-                </div>
-              </div>
-            ))}
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Co-curriculars Section */}
-      <section className="section cocurricular-section bg-light">
-        <div className="container">
-          <Reveal className="grid grid-2 items-center">
-            <div>
-              <h2 className="section-title">Beyond the Classroom</h2>
-              <p className="section-subtitle mb-8">Education at SATTVA extends beyond textbooks. Our co-curricular programs are designed to discover hidden talents and build leadership skills.</p>
-              <div className="grid grid-2">
-                {cocurriculars.map((item, idx) => (
-                  <div key={idx} className="cocurricular-item glass flex-center">
-                    <div className="text-primary">{item.icon}</div>
-                    <span className="font-semibold">{item.title}</span>
+          <SectionHead eyebrow="Our stages" title="Four stages, one steady journey" />
+          <div className="stage-list">
+            {stages.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <Reveal as="article" key={s.id} id={s.id} className={`stage tone-${s.tone}`}>
+                  <header className="stage__head">
+                    <span className="icon-badge"><Icon size={24} aria-hidden="true" /></span>
+                    <div>
+                      <p className="stage__count">Stage {i + 1}</p>
+                      <h3>{s.name}</h3>
+                    </div>
+                  </header>
+                  <div className="chip-row">
+                    {s.standards.map((std) => <span key={std} className="chip">{std}</span>)}
                   </div>
-                ))}
-              </div>
-            </div>
-            <div className="cocurricular-image-wrapper">
-               <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=800" alt="Students in library" className="rounded-image shadow-xl" loading="lazy" />
-            </div>
+                  <p className="stage__summary">{s.summary}</p>
+                  <ul className="check-list">
+                    {s.details.map((d) => (
+                      <li key={d}>
+                        <Check size={18} aria-hidden="true" />
+                        <span>{d}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- Streams ---------- */}
+      <section className="section section--sand">
+        <div className="container">
+          <SectionHead
+            eyebrow="Std 11 & 12"
+            title="Choose your stream"
+            lead="After Std 10, students continue with us in the Science or Commerce stream, preparing for the Std 12 GSEB board examination."
+          />
+          <div className="stream-grid">
+            {streams.map((st, i) => {
+              const Icon = st.icon;
+              return (
+                <Reveal key={st.name} className={`stream-card tone-${st.tone}`} delay={i * 100}>
+                  <div className="stream-card__head">
+                    <span className="icon-badge"><Icon size={24} aria-hidden="true" /></span>
+                    <h3>{st.name}</h3>
+                  </div>
+                  <p>{st.text}</p>
+                  <p className="stream-card__label">Main subjects</p>
+                  <div className="chip-row">
+                    {st.subjects.map((sub) => <span key={sub} className="chip chip--white">{sub}</span>)}
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- Computer education ---------- */}
+      <section className="section">
+        <div className="container split">
+          <div>
+            <SectionHead
+              eyebrow="Computer education"
+              title="Practical computer skills in our computer lab"
+              lead="Following the GSEB curriculum, students learn step by step — from what a computer is to building their first web page."
+            />
+          </div>
+          <Reveal className="topic-card">
+            <span className="icon-badge tone-blue"><Laptop size={22} aria-hidden="true" /></span>
+            <ul className="topic-list">
+              {computerTopics.map((t) => (
+                <li key={t}>
+                  <Check size={18} aria-hidden="true" />
+                  {t}
+                </li>
+              ))}
+            </ul>
           </Reveal>
         </div>
       </section>
 
-      {/* Student Support */}
-      <section className="section support-section">
+      {/* ---------- Activities in the timetable ---------- */}
+      <section className="section section--white">
         <div className="container">
-          <Reveal className="section-header text-center">
-            <h2 className="section-title">Student Support Services</h2>
-            <p className="section-subtitle">We ensure every student has the resources they need to succeed.</p>
+          <SectionHead
+            eyebrow="Part of every week"
+            title="Activities built into the timetable"
+            lead="Alongside academics, every student takes part in:"
+            align="center"
+          />
+          <Reveal as="ul" className="activity-pills">
+            {activities.map((a) => {
+              const Icon = a.icon;
+              return (
+                <li key={a.title} className={`activity-pill tone-${a.tone}`}>
+                  <span className="icon-badge"><Icon size={18} aria-hidden="true" /></span>
+                  {a.title}
+                </li>
+              );
+            })}
           </Reveal>
-          <Reveal className="grid grid-3" delay={100}>
-            {supportServices.map((service, idx) => (
-              <div key={idx} className="support-card glass hover-lift">
-                <div className="support-icon text-primary">{service.icon}</div>
-                <div className="support-text">
-                  <h3 className="support-title">{service.title}</h3>
-                  <p className="support-desc">{service.desc}</p>
-                </div>
-              </div>
-            ))}
+          <Reveal className="center-link">
+            <Link to="/campus-life" className="text-link">
+              See campus life <ArrowRight size={16} aria-hidden="true" />
+            </Link>
           </Reveal>
         </div>
       </section>
 
-      {/* Facilities */}
-      <section className="section facilities-section bg-light">
-        <div className="container">
-          <Reveal className="section-header text-center">
-            <h2 className="section-title">World‑Class Facilities</h2>
-            <p className="section-subtitle">Spaces designed to inspire learning and discovery.</p>
-          </Reveal>
-          <Reveal className="grid grid-2" delay={100}>
-            <div className="facility-card glass hover-lift">
-              <h3 className="facility-title">Science Laboratories</h3>
-              <p>Dedicated Physics, Chemistry, and Biology labs equipped for hands-on experiments in the Science stream.</p>
-            </div>
-            <div className="facility-card glass hover-lift">
-              <h3 className="facility-title">Computer Lab</h3>
-              <p>A well-equipped lab where students learn computer basics, Word, Excel, painting, and HTML/CSS as per the GSEB curriculum.</p>
-            </div>
-            <div className="facility-card glass hover-lift">
-              <h3 className="facility-title">Two Auditoriums</h3>
-              <p>Spacious venues that host our annual function, cultural events, and school assemblies.</p>
-            </div>
-            <div className="facility-card glass hover-lift">
-              <h3 className="facility-title">Fully AC Classrooms</h3>
-              <p>Every classroom is air-conditioned, keeping students comfortable and focused through the school day.</p>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-      
-      {/* Calendar Highlights Banner */}
-      <section className="section calendar-section text-center">
-        <div className="container">
-          <CalendarIcon size={48} className="mx-auto mb-4 opacity-75" />
-          <h2 className="section-title text-white">Academic Calendar 2026-27</h2>
-          <p className="section-subtitle text-white max-w-600 mx-auto mb-8">Stay up to date with semester start dates, examination periods, and holidays.</p>
-          <button className="btn btn-outline btn-outline-inverse">
-            Download Full Calendar
-          </button>
-        </div>
-      </section>
-    </div>
+      <QuoteBand {...quotes.academics} />
+      <CtaBand />
+    </>
   );
 };
 

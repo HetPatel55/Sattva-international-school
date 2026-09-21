@@ -1,210 +1,129 @@
-import { useState, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import PageHeader from '../components/PageHeader';
-import './Gallery.css';
+import { school, gallery, quotes } from '../data/site';
+import usePageMeta from '../hooks/usePageMeta';
+import PageHero from '../components/PageHero';
+import QuoteBand from '../components/QuoteBand';
+
+const Lightbox = ({ items, index, onClose, onMove }) => {
+  const closeRef = useRef(null);
+  const touchX = useRef(null);
+  const item = items[index];
+
+  useEffect(() => {
+    const previousFocus = document.activeElement;
+    closeRef.current?.focus();
+    document.body.classList.add('menu-open');
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft') onMove(-1);
+      if (e.key === 'ArrowRight') onMove(1);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.classList.remove('menu-open');
+      previousFocus?.focus?.();
+    };
+  }, [onClose, onMove]);
+
+  return createPortal(
+    <div
+      className="lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label={item.alt}
+      onClick={onClose}
+      onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+      onTouchEnd={(e) => {
+        if (touchX.current === null) return;
+        const dx = e.changedTouches[0].clientX - touchX.current;
+        if (Math.abs(dx) > 50) onMove(dx > 0 ? -1 : 1);
+        touchX.current = null;
+      }}
+    >
+      <button ref={closeRef} type="button" className="lightbox__btn lightbox__close" onClick={onClose} aria-label="Close">
+        <X size={24} aria-hidden="true" />
+      </button>
+      {items.length > 1 && (
+        <>
+          <button type="button" className="lightbox__btn lightbox__prev" aria-label="Previous photo"
+            onClick={(e) => { e.stopPropagation(); onMove(-1); }}>
+            <ChevronLeft size={26} aria-hidden="true" />
+          </button>
+          <button type="button" className="lightbox__btn lightbox__next" aria-label="Next photo"
+            onClick={(e) => { e.stopPropagation(); onMove(1); }}>
+            <ChevronRight size={26} aria-hidden="true" />
+          </button>
+        </>
+      )}
+      <figure className="lightbox__figure" onClick={(e) => e.stopPropagation()}>
+        <img src={item.src} alt={item.alt} />
+        <figcaption>
+          {item.alt}
+          <span>{index + 1} / {items.length}</span>
+        </figcaption>
+      </figure>
+    </div>,
+    document.body,
+  );
+};
 
 const Gallery = () => {
-  const [selectedIndex, setSelectedIndex] = useState(null);
-  const [activeCategory, setActiveCategory] = useState('All');
-  const lightboxRef = useRef(null);
-  const touchStartXRef = useRef(null);
+  usePageMeta('Gallery', `Photos of the campus, activities and events at ${school.name}.`);
+  const categories = useMemo(() => ['All', ...new Set(gallery.map((g) => g.category))], []);
+  const [active, setActive] = useState('All');
+  const [open, setOpen] = useState(null);
 
-  const categories = ['All', 'Campus', 'Academics', 'Sports', 'Events'];
-
-  const images = [
-    { src: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=800', alt: 'Students walking on campus', category: 'Campus' },
-    { src: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=800', alt: 'Debate competition', category: 'Events' },
-    { src: 'https://images.unsplash.com/photo-1564069114553-7215e1ff1890?auto=format&fit=crop&q=80&w=800', alt: 'Science exhibition', category: 'Academics' },
-    { src: 'https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?auto=format&fit=crop&q=80&w=800', alt: 'Graduation ceremony', category: 'Events' },
-    { src: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=800', alt: 'Study group in library', category: 'Campus' },
-    { src: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&q=80&w=800', alt: 'Chemistry lab', category: 'Academics' },
-    { src: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=800', alt: 'Diverse student group', category: 'Campus' },
-    { src: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=800', alt: 'Campus building', category: 'Campus' },
-    { src: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&q=80&w=800', alt: 'Sports match outdoors', category: 'Sports' },
-    { src: 'https://images.unsplash.com/photo-1529390079861-591de354faf5?auto=format&fit=crop&q=80&w=800', alt: 'Art class', category: 'Academics' },
-    { src: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=800', alt: 'Teacher helping student', category: 'Academics' },
-    { src: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=800', alt: 'Books on desk', category: 'Campus' }
-  ];
-
-  const filteredImages = activeCategory === 'All'
-    ? images
-    : images.filter(img => img.category === activeCategory);
-
-  const selectedImage = selectedIndex !== null ? filteredImages[selectedIndex] : null;
-  const showBento = filteredImages.length >= 6;
-
-  const showPrev = () => setSelectedIndex((i) => (i - 1 + filteredImages.length) % filteredImages.length);
-  const showNext = () => setSelectedIndex((i) => (i + 1) % filteredImages.length);
-
-  const handleTouchStart = (e) => {
-    touchStartXRef.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e) => {
-    if (touchStartXRef.current === null) return;
-    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
-    const SWIPE_THRESHOLD = 50;
-    if (deltaX > SWIPE_THRESHOLD) showPrev();
-    else if (deltaX < -SWIPE_THRESHOLD) showNext();
-    touchStartXRef.current = null;
-  };
-
-  // Keyboard navigation & scroll lock while lightbox is open
-  useEffect(() => {
-    const count = filteredImages.length;
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') setSelectedIndex(null);
-      if (e.key === 'ArrowLeft') setSelectedIndex((i) => (i - 1 + count) % count);
-      if (e.key === 'ArrowRight') setSelectedIndex((i) => (i + 1) % count);
-
-      // Trap focus inside the lightbox while it's open
-      if (e.key === 'Tab' && lightboxRef.current) {
-        const focusable = lightboxRef.current.querySelectorAll('button');
-        if (focusable.length === 0) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    };
-    if (selectedIndex !== null) {
-      document.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'auto';
-    };
-  }, [selectedIndex, filteredImages.length]);
+  const items = active === 'All' ? gallery : gallery.filter((g) => g.category === active);
+  const count = items.length;
+  // Stable callbacks so the lightbox's focus/keyboard effect runs once per opening
+  const move = useCallback((dir) => setOpen((i) => (i + dir + count) % count), [count]);
+  const close = useCallback(() => setOpen(null), []);
 
   return (
-    <div className="gallery-page animate-fade-in">
-      <PageHeader
-        title="Life at SATTVA"
-        subtitle="A visual journey through our vibrant campus, events, and student life."
-        image="https://images.unsplash.com/photo-1522199670076-2852f80289c9?auto=format&fit=crop&q=80&w=1920"
-        alt="Gallery header"
+    <>
+      <PageHero
+        eyebrow="Gallery"
+        title="Life at SATTVA, in pictures"
+        lead="A look at our campus, our classrooms and the moments our students remember."
       />
 
-      {/* Quote */}
-      <section className="section quote-section text-center">
+      <section className="section section--white">
         <div className="container">
-          <blockquote className="legend-quote">
-            "Don't limit a child to your own learning, for he was born in another time."
-          </blockquote>
-          <p className="legend-quote-author">— Rabindranath Tagore</p>
-        </div>
-      </section>
-
-      <section className="section gallery-section">
-        <div className="container">
-          {/* Category Filter Bar */}
-          <div className="category-filter-bar">
-            {categories.map(cat => (
+          <div className="filter-bar" role="group" aria-label="Filter photos">
+            {categories.map((c) => (
               <button
-                key={cat}
-                className={`filter-btn ${activeCategory === cat ? 'active' : ''}`}
-                onClick={() => setActiveCategory(cat)}
+                key={c}
+                type="button"
+                className={`filter-bar__btn${active === c ? ' is-active' : ''}`}
+                aria-pressed={active === c}
+                onClick={() => setActive(c)}
               >
-                {cat}
+                {c}
               </button>
             ))}
           </div>
 
-          {/* Bento-style Grid */}
-          <div className="gallery-grid">
-            {filteredImages.map((img, idx) => {
-              const isLarge = showBento && idx % 5 === 2;
-              return (
-                <div
-                  key={img.src}
-                  className={`gallery-item ${isLarge ? 'gallery-item-large' : ''}`}
-                  onClick={() => setSelectedIndex(idx)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => { if (e.key === 'Enter') setSelectedIndex(idx); }}
-                  aria-label={`View larger image of ${img.alt}`}
-                >
-                  <img
-                    src={img.src}
-                    srcSet={`${img.src.replace('w=800', 'w=400')} 400w, ${img.src} 800w`}
-                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-                    alt={img.alt}
-                    loading="lazy"
-                  />
-                  <div className="gallery-item-overlay">
-                    <span className="gallery-item-caption">{img.alt}</span>
-                    <span className="gallery-item-category">{img.category}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <ul className="photo-grid">
+            {items.map((g, i) => (
+              <li key={g.src}>
+                <button type="button" className="photo-grid__item" onClick={() => setOpen(i)}>
+                  <img src={g.thumb ?? g.src} alt={g.alt} loading="lazy" width="800" height="450" />
+                  <span className="photo-grid__caption">{g.alt}</span>
+                  {g.placeholder && <span className="photo-grid__sample">Sample photo</span>}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* Lightbox — portaled to body so it isn't confined by any transformed ancestor */}
-      {selectedImage && createPortal(
-        <div
-          ref={lightboxRef}
-          className="lightbox open"
-          onClick={() => setSelectedIndex(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Image gallery lightbox"
-        >
-          <button
-            className="lightbox-close"
-            onClick={() => setSelectedIndex(null)}
-            aria-label="Close lightbox"
-            autoFocus
-          >
-            <X size={28} />
-          </button>
+      {open !== null && <Lightbox items={items} index={open} onClose={close} onMove={move} />}
 
-          {filteredImages.length > 1 && (
-            <>
-              <button
-                className="lightbox-nav lightbox-prev"
-                onClick={(e) => { e.stopPropagation(); showPrev(); }}
-                aria-label="Previous image"
-              >
-                <ChevronLeft size={28} />
-              </button>
-              <button
-                className="lightbox-nav lightbox-next"
-                onClick={(e) => { e.stopPropagation(); showNext(); }}
-                aria-label="Next image"
-              >
-                <ChevronRight size={28} />
-              </button>
-            </>
-          )}
-
-          <div
-            className="lightbox-content"
-            onClick={(e) => e.stopPropagation()}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            <img src={selectedImage.src} alt={selectedImage.alt} className="lightbox-image" />
-            <p className="lightbox-caption">{selectedImage.alt}</p>
-            {filteredImages.length > 1 && (
-              <p className="lightbox-counter">{selectedIndex + 1} / {filteredImages.length}</p>
-            )}
-          </div>
-        </div>,
-        document.body
-      )}
-    </div>
+      <QuoteBand {...quotes.gallery} />
+    </>
   );
 };
 

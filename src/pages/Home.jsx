@@ -1,285 +1,250 @@
-import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Users, Trophy, Star, Quote, GraduationCap, Building, Award, FlaskConical, Languages, Palette, Landmark, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, Phone, Check, Sparkles, PartyPopper, Flag } from 'lucide-react';
+import { school, stages, whyChoose, facilities, activities, festivals, houses, quotes } from '../data/site';
+import usePageMeta from '../hooks/usePageMeta';
 import Reveal from '../components/Reveal';
-import './Home.css';
+import SectionHead from '../components/SectionHead';
+import TileMotif from '../components/TileMotif';
+import QuoteBand from '../components/QuoteBand';
+import CtaBand from '../components/CtaBand';
+
+const facts = [
+  { value: 'GSEB', label: 'Affiliated board' },
+  { value: 'JrKG – 12', label: 'All standards, one campus' },
+  { value: '2 mediums', label: 'English & Gujarati' },
+  { value: '2 streams', label: 'Science & Commerce' },
+  { value: '15:1', label: 'Student–teacher ratio' },
+];
 
 const Home = () => {
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
-  const features = [
-    {
-      icon: <BookOpen className="feature-icon" />,
-      title: "Excellence in Academics",
-      description: "Rigorous curriculum designed to challenge and inspire students to reach their full potential.",
-      tile: "red"
-    },
-    {
-      icon: <Users className="feature-icon" />,
-      title: "Expert Faculty",
-      description: "Dedicated educators committed to providing personalized attention and mentorship.",
-      tile: "green"
-    },
-    {
-      icon: <Trophy className="feature-icon" />,
-      title: "Holistic Development",
-      description: "Dance, karate, yoga, and the arts alongside academics for all-round character building.",
-      tile: "purple"
-    },
-    {
-      icon: <Star className="feature-icon" />,
-      title: "State-of-the-Art Facilities",
-      description: "Fully air-conditioned classrooms, science labs, and two auditoriums to enhance the learning experience.",
-      tile: "blue"
-    }
-  ];
-
-  const stats = [
-    { value: "GSEB", label: "State Board Affiliated", icon: <Building /> },
-    { value: "7", label: "Skill Activities", icon: <Palette /> },
-    { value: "2", label: "Auditoriums", icon: <Landmark /> },
-    { value: "15:1", label: "Student-Teacher Ratio", icon: <BookOpen /> }
-  ];
-
-  const curriculumHighlights = [
-    { icon: <GraduationCap />, title: "JrKG to Std 12", desc: "A seamless academic journey from the earliest years through senior secondary.", tile: "red" },
-    { icon: <Award />, title: "GSEB Curriculum", desc: "Recognized state board curriculum delivering strong academic foundations.", tile: "green" },
-    { icon: <FlaskConical />, title: "Science & Commerce", desc: "Specialized streams in Std 11-12 to match every student's ambition.", tile: "purple" },
-    { icon: <Languages />, title: "English & Gujarati Medium", desc: "Choose the medium of instruction that feels most like home.", tile: "blue" }
-  ];
-
-  const testimonials = [
-    {
-      quote: "SATTVA has completely transformed my child's approach to learning. The teachers genuinely care.",
-      author: "Priya Sharma",
-      role: "Parent of Std 9 Student",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=150&h=150"
-    },
-    {
-      quote: "The science labs and hands-on learning make every subject feel real. I've grown so much more confident here.",
-      author: "Rahul Desai",
-      role: "Std 10 Student",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150"
-    },
-    {
-      quote: "An environment that not only demands academic rigor but also supports mental and emotional well-being.",
-      author: "Dr. Ananya Gupta",
-      role: "Parent of Std 12 Student",
-      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150&h=150"
-    }
-  ];
-
-  const showTestimonial = (direction) => {
-    setActiveTestimonial((current) => (current + direction + testimonials.length) % testimonials.length);
-  };
-
-  const touchStartXRef = useRef(null);
-
-  const handleTestimonialTouchStart = (e) => {
-    touchStartXRef.current = e.touches[0].clientX;
-  };
-
-  const handleTestimonialTouchEnd = (e) => {
-    if (touchStartXRef.current === null) return;
-    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
-    const SWIPE_THRESHOLD = 50;
-    if (deltaX > SWIPE_THRESHOLD) showTestimonial(-1);
-    else if (deltaX < -SWIPE_THRESHOLD) showTestimonial(1);
-    touchStartXRef.current = null;
-  };
+  usePageMeta(
+    null,
+    'SATTVA International School, Singarwa, Ahmedabad — GSEB school from JrKG to Std 12 in English and Gujarati medium, with Science and Commerce streams.',
+  );
+  const phone = school.phones[0];
 
   return (
-    <div className="home-page">
-      {/* Hero Section */}
+    <>
+      {/* ---------- Hero ---------- */}
       <section className="hero">
-        <div className="hero-overlay"></div>
-        <img
-          src="/campus-hero.jpeg"
-          alt="SATTVA International School Campus"
-          className="hero-image"
-          fetchPriority="high"
-        />
-        <div className="container hero-content text-center">
-          <h1 className="hero-title animate-fade-in delay-100">
-            SATTVA International School
-          </h1>
-          <p className="hero-subtitle mx-auto animate-fade-in delay-200">
-            Excellence. Heritage. Character.
-          </p>
-          <div className="hero-actions flex-center animate-fade-in delay-300">
-            <Link to="/admissions" className="btn btn-primary hero-cta-btn">
-              Inquire Today
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Statistics Section */}
-      <section className="section stats-section glass">
-        <div className="container">
-          <Reveal className="grid grid-2 grid-4-lg stats-grid">
-            {stats.map((stat, idx) => (
-              <div key={idx} className="stat-card">
-                <div className="stat-icon">{stat.icon}</div>
-                <div className="stat-text">
-                  <div className="stat-value text-gradient">{stat.value}</div>
-                  <div className="stat-label">{stat.label}</div>
-                </div>
-              </div>
-            ))}
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Why Choose Us Section */}
-      <section className="section features-section">
-        <div className="container">
-          <Reveal className="section-header text-center">
-            <h2 className="section-title">Why Choose SATTVA?</h2>
-            <p className="section-subtitle">We are committed to providing an environment where every child can thrive and excel.</p>
-          </Reveal>
-
-          <Reveal className="grid grid-2 grid-4-lg features-grid" delay={100}>
-            {features.map((feature, index) => (
-              <div key={index} className="feature-card glass hover-lift">
-                <div className={`feature-icon-wrapper tile-${feature.tile}`}>
-                  {feature.icon}
-                </div>
-                <div className="feature-text">
-                  <h3 className="feature-card-title">{feature.title}</h3>
-                  <p className="feature-card-desc">{feature.description}</p>
-                </div>
-              </div>
-            ))}
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Curriculum Highlights */}
-      <section className="section curriculum-section bg-light">
-        <div className="container">
-          <Reveal className="section-header text-center">
-            <h2 className="section-title">Our Curriculum at a Glance</h2>
-            <p className="section-subtitle">A GSEB-affiliated education built around every stage of your child's growth.</p>
-          </Reveal>
-          <Reveal className="grid grid-2 grid-4-lg curriculum-grid" delay={100}>
-            {curriculumHighlights.map((item, idx) => (
-              <div key={idx} className="curriculum-tile glass hover-lift">
-                <div className={`curriculum-tile-icon tile-${item.tile}`}>
-                  {item.icon}
-                </div>
-                <div className="curriculum-tile-text">
-                  <h3 className="curriculum-tile-title">{item.title}</h3>
-                  <p className="curriculum-tile-desc">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Quote */}
-      <section className="section quote-section text-center">
-        <div className="container">
-          <blockquote className="legend-quote">
-            "Dream is not that which you see while sleeping, it is something that does not let you sleep."
-          </blockquote>
-          <p className="legend-quote-author">— Dr. A. P. J. Abdul Kalam</p>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="section testimonials-section bg-light">
-        <div className="container">
-          <Reveal className="section-header text-center">
-            <h2 className="section-title">Voices of SATTVA</h2>
-            <p className="section-subtitle">Hear what our parents and alumni have to say about their experience.</p>
-          </Reveal>
-
-          <Reveal
-            className="testimonial-carousel"
-            delay={100}
-            onTouchStart={handleTestimonialTouchStart}
-            onTouchEnd={handleTestimonialTouchEnd}
-          >
-            <button
-              type="button"
-              className="testimonial-nav testimonial-prev"
-              onClick={() => showTestimonial(-1)}
-              aria-label="Previous testimonial"
-            >
-              <ChevronLeft size={22} />
-            </button>
-
-            <div className="testimonial-card glass">
-              <Quote className="quote-icon" size={32} />
-              <p className="testimonial-quote">"{testimonials[activeTestimonial].quote}"</p>
-              <div className="testimonial-author-flex">
-                <img
-                  src={testimonials[activeTestimonial].image}
-                  alt={testimonials[activeTestimonial].author}
-                  className="author-image"
-                  loading="lazy"
-                  width="50"
-                  height="50"
-                />
-                <div>
-                  <h4 className="author-name">{testimonials[activeTestimonial].author}</h4>
-                  <p className="author-role">{testimonials[activeTestimonial].role}</p>
-                </div>
-              </div>
+        <div className="container hero__grid">
+          <div className="hero__text">
+            <p className="eyebrow">{school.board} school · Singarwa, Ahmedabad</p>
+            <h1 className="hero__title">
+              Rooted in values.
+              <br />
+              <em>Ready for tomorrow.</em>
+            </h1>
+            <p className="lead hero__lead">
+              GSEB education from JrKG to Std 12 in English and Gujarati medium, with Science and Commerce
+              streams — on a modern campus in Singarwa.
+            </p>
+            <div className="hero__actions">
+              <Link to="/admissions#enquiry" className="btn btn--primary">
+                Admission enquiry <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+              <a href={`tel:${phone.tel}`} className="btn btn--outline">
+                <Phone size={18} aria-hidden="true" /> {phone.display}
+              </a>
             </div>
+          </div>
 
-            <button
-              type="button"
-              className="testimonial-nav testimonial-next"
-              onClick={() => showTestimonial(1)}
-              aria-label="Next testimonial"
-            >
-              <ChevronRight size={22} />
-            </button>
-          </Reveal>
-
-          <div className="testimonial-dots" role="tablist" aria-label="Choose a testimonial">
-            {testimonials.map((testimonial, idx) => (
-              <button
-                key={testimonial.author}
-                type="button"
-                role="tab"
-                aria-selected={idx === activeTestimonial}
-                aria-label={`Show testimonial from ${testimonial.author}`}
-                className={`testimonial-dot ${idx === activeTestimonial ? 'active' : ''}`}
-                onClick={() => setActiveTestimonial(idx)}
+          <figure className="hero__media">
+            <div className="hero__frame">
+              <img
+                src="/photos/campus-front.jpg"
+                srcSet="/photos/campus-front-800.jpg 800w, /photos/campus-front.jpg 1280w"
+                sizes="(min-width: 1024px) 600px, 100vw"
+                width="1280"
+                height="720"
+                alt="The SATTVA International School building in Singarwa, Ahmedabad"
+                fetchPriority="high"
               />
+            </div>
+            <TileMotif className="hero__motif" />
+            <figcaption className="hero__caption">Our campus in Singarwa, Ahmedabad</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      {/* ---------- Key facts ---------- */}
+      <section className="facts" aria-label="Key facts">
+        <div className="container">
+          <ul className="facts__list">
+            {facts.map((f, i) => (
+              <Reveal as="li" key={f.label} className="facts__item" delay={i * 60}>
+                <strong>{f.value}</strong>
+                <span>{f.label}</span>
+              </Reveal>
             ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ---------- Stages ---------- */}
+      <section className="section">
+        <div className="container">
+          <SectionHead
+            eyebrow="Academics"
+            title="One school, from JrKG to Std 12"
+            lead="Your child can grow with us through every stage of the GSEB system — no change of school, no fresh start."
+          />
+          <ol className="journey">
+            {stages.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <Reveal as="li" key={s.id} className={`journey__step tone-${s.tone}`} delay={i * 80}>
+                  <span className="journey__badge">
+                    <Icon size={22} aria-hidden="true" />
+                  </span>
+                  <div className="journey__body">
+                    <p className="journey__count">Stage {i + 1}</p>
+                    <h3>{s.name}</h3>
+                    <div className="chip-row">
+                      {s.standards.map((std) => (
+                        <span key={std} className="chip">{std}</span>
+                      ))}
+                    </div>
+                    <p>{s.summary}</p>
+                    <Link to={`/academics#${s.id}`} className="text-link">
+                      Learn more <ArrowRight size={16} aria-hidden="true" />
+                    </Link>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </ol>
+        </div>
+      </section>
+
+      {/* ---------- Why SATTVA ---------- */}
+      <section className="section section--white">
+        <div className="container why">
+          <div className="why__intro">
+            <SectionHead
+              eyebrow="Why SATTVA"
+              title="What parents value most about us"
+              lead="Good teaching, a safe and comfortable campus, and time for every child."
+            />
+            <Reveal>
+              <Link to="/about" className="btn btn--ink">
+                About our school <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+            </Reveal>
+          </div>
+          <ul className="why__list">
+            {whyChoose.map((item, i) => (
+              <Reveal as="li" key={item.title} className="why__item" delay={(i % 2) * 80}>
+                <span className="why__check">
+                  <Check size={18} aria-hidden="true" />
+                </span>
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </div>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ---------- Campus ---------- */}
+      <section className="section">
+        <div className="container campus">
+          <Reveal className="campus__media">
+            <img
+              src="/photos/campus-garden.jpg"
+              srcSet="/photos/campus-garden-800.jpg 800w, /photos/campus-garden.jpg 1280w"
+              sizes="(min-width: 1024px) 560px, 100vw"
+              width="1280"
+              height="720"
+              alt="The SATTVA campus with its green wall, classrooms and playground"
+              loading="lazy"
+            />
+          </Reveal>
+          <div className="campus__text">
+            <SectionHead
+              eyebrow="Our campus"
+              title="Built for learning, comfort and safety"
+            />
+            <ul className="feature-list">
+              {facilities.map((f, i) => {
+                const Icon = f.icon;
+                return (
+                  <Reveal as="li" key={f.title} className="feature-list__item" delay={i * 60}>
+                    <span className="icon-badge icon-badge--soft">
+                      <Icon size={22} aria-hidden="true" />
+                    </span>
+                    <div>
+                      <h3>{f.title}</h3>
+                      <p>{f.text}</p>
+                    </div>
+                  </Reveal>
+                );
+              })}
+            </ul>
           </div>
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="section cta-section">
+      {/* ---------- Life at SATTVA ---------- */}
+      <section className="section section--sand">
         <div className="container">
-          <Reveal className="cta-box text-center relative overflow-hidden">
-            <img
-              src="/campus-1.jpeg"
-              alt=""
-              className="cta-bg-image"
-              loading="lazy"
-              aria-hidden="true"
-            />
-            <div className="cta-overlay"></div>
-            <div className="cta-content relative z-10">
-              <h2 className="cta-title text-white">Ready to Begin Your Journey?</h2>
-              <p className="cta-desc text-white">Join the SATTVA family and give your child the foundation they need for a successful future.</p>
-              <div className="flex-center cta-btn-wrapper">
-                <Link to="/admissions" className="btn btn-primary btn-lg shadow-glow">
-                  Start Application Process
-                </Link>
+          <SectionHead
+            eyebrow="Campus life"
+            title="Learning that goes beyond the classroom"
+            lead="Every child takes part in activities that build confidence, fitness and creativity."
+            align="center"
+          />
+          <Reveal as="ul" className="activity-pills">
+            {activities.map((a) => {
+              const Icon = a.icon;
+              return (
+                <li key={a.title} className={`activity-pill tone-${a.tone}`}>
+                  <span className="icon-badge">
+                    <Icon size={18} aria-hidden="true" />
+                  </span>
+                  {a.title}
+                </li>
+              );
+            })}
+          </Reveal>
+
+          <div className="life-cards">
+            <Reveal className="life-card tone-orange">
+              <span className="icon-badge"><Sparkles size={22} aria-hidden="true" /></span>
+              <h3>Annual Function</h3>
+              <p>Every year our students take the stage — dance, karate, anchoring and commentary — in front of their families.</p>
+            </Reveal>
+            <Reveal className="life-card tone-crimson" delay={80}>
+              <span className="icon-badge"><PartyPopper size={22} aria-hidden="true" /></span>
+              <h3>Festivals</h3>
+              <p>We celebrate every Indian and Gujarati festival together at school.</p>
+              <div className="chip-row">
+                {festivals.map((f) => <span key={f} className="chip chip--white">{f}</span>)}
               </div>
-            </div>
+            </Reveal>
+            <Reveal className="life-card tone-purple" delay={160}>
+              <span className="icon-badge"><Flag size={22} aria-hidden="true" /></span>
+              <h3>House System</h3>
+              <p>
+                Every student, in every standard, belongs to one of {houses.total} houses — including{' '}
+                {houses.named.join(' and ')} — building teamwork and healthy competition.
+              </p>
+            </Reveal>
+          </div>
+
+          <Reveal className="center-link">
+            <Link to="/campus-life" className="text-link">
+              Explore campus life <ArrowRight size={16} aria-hidden="true" />
+            </Link>
           </Reveal>
         </div>
       </section>
-    </div>
+
+      <QuoteBand {...quotes.home} />
+      <CtaBand />
+    </>
   );
 };
 
