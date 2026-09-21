@@ -33,7 +33,7 @@
 }
 
 .brand img {
-  height: 42px;
+  height: 41px;
   width: auto;
 }
 
@@ -86,7 +86,7 @@
 
 @media (min-width: 720px) {
   .brand img {
-    height: 48px;
+    height: 47px;
   }
 
   .header-cta {
@@ -100,7 +100,7 @@
   }
 
   .brand img {
-    height: 54px;
+    height: 52px;
   }
 
   .menu-toggle {
@@ -189,7 +189,7 @@
 }
 
 .site-footer__brand img {
-  height: 54px;
+  height: 52px;
   width: auto;
   margin-bottom: 1rem;
 }

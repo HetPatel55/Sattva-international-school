@@ -50,21 +50,21 @@
   /* Layout */
   --container: 1320px;
   --gutter: 20px;
-  --header-h: 68px;
-  --section-y: 56px;
+  --header-h: 66px;
+  --section-y: 54px;
 }
 
 @media (min-width: 720px) {
   :root {
     --gutter: 40px;
-    --section-y: 80px;
+    --section-y: 78px;
   }
 }
 
 @media (min-width: 1024px) {
   :root {
-    --header-h: 80px;
-    --section-y: 104px;
+    --header-h: 78px;
+    --section-y: 101px;
     /* Wider screens get proportionally more breathing room at the sides */
     --gutter: clamp(40px, 5.5vw, 110px);
   }
@@ -82,6 +82,8 @@
 }
 
 html {
+  /* 97% of the browser default: scales all rem-based type and spacing down 3% */
+  font-size: 97%;
   -webkit-text-size-adjust: 100%;
   scroll-padding-top: calc(var(--header-h) + 16px);
 }
@@ -259,7 +261,7 @@ p {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  min-height: 50px;
+  min-height: 48px;
   padding: 0.8rem 1.5rem;
   border: 2px solid transparent;
   border-radius: 999px;
@@ -306,7 +308,7 @@ p {
 }
 
 .btn--sm {
-  min-height: 42px;
+  min-height: 41px;
   padding: 0.55rem 1.1rem;
   font-size: 0.92rem;
 }
