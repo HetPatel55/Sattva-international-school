@@ -4,7 +4,6 @@ import { school, stages, whyChoose, facilities, activities, festivals, houses, q
 import usePageMeta from '../hooks/usePageMeta';
 import Reveal from '../components/Reveal';
 import SectionHead from '../components/SectionHead';
-import TileMotif from '../components/TileMotif';
 import QuoteBand from '../components/QuoteBand';
 import CtaBand from '../components/CtaBand';
 
@@ -61,7 +60,6 @@ const Home = () => {
                 fetchPriority="high"
               />
             </div>
-            <TileMotif className="hero__motif" />
             <figcaption className="hero__caption">Our campus in Singarwa, Ahmedabad</figcaption>
           </figure>
         </div>

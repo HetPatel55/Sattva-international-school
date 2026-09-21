@@ -48,7 +48,7 @@
   --shadow-lg: 0 2px 4px rgba(20, 33, 61, 0.04), 0 24px 48px -24px rgba(20, 33, 61, 0.3);
 
   /* Layout */
-  --container: 1400px;
+  --container: 1320px;
   --gutter: 20px;
   --header-h: 68px;
   --section-y: 56px;
@@ -56,7 +56,7 @@
 
 @media (min-width: 720px) {
   :root {
-    --gutter: 32px;
+    --gutter: 40px;
     --section-y: 80px;
   }
 }
@@ -66,7 +66,7 @@
     --header-h: 80px;
     --section-y: 104px;
     /* Wider screens get proportionally more breathing room at the sides */
-    --gutter: clamp(32px, 4vw, 72px);
+    --gutter: clamp(40px, 5.5vw, 110px);
   }
 }
 

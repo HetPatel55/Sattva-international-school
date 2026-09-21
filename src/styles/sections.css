@@ -52,14 +52,6 @@
   object-fit: cover;
 }
 
-.hero__motif {
-  position: absolute;
-  top: -24px;
-  right: 14px;
-  width: 64px;
-  filter: drop-shadow(0 6px 12px rgba(20, 33, 61, 0.18));
-}
-
 .hero__caption {
   margin-top: 0.75rem;
   font-size: 0.85rem;
@@ -82,13 +74,6 @@
   .hero__grid {
     grid-template-columns: 1fr 1.15fr;
     gap: 4rem;
-  }
-
-  /* Sits on the photo's top-right corner, clear of the building and the caption */
-  .hero__motif {
-    top: -30px;
-    right: -26px;
-    width: 96px;
   }
 }
 
