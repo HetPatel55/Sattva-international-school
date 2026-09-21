@@ -325,12 +325,9 @@
   max-width: 46rem;
 }
 
+/* Only shown (complete, never clipped) once there is a column for it */
 .page-hero__motif {
-  position: absolute;
-  top: -34px;
-  right: -46px;
-  width: 150px;
-  opacity: 0.13;
+  display: none;
 }
 
 @media (min-width: 720px) {
@@ -347,9 +344,8 @@
   }
 
   .page-hero__motif {
-    position: static;
+    display: block;
     width: 200px;
-    opacity: 1;
   }
 }
 
@@ -690,6 +686,7 @@
 .faq__q {
   margin: 0;
   font: inherit;
+  text-wrap: pretty; /* not the heading default "balance", which wraps questions too early */
 }
 
 .faq__q button {

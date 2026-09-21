@@ -192,7 +192,7 @@
 }
 
 .journey__count {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -288,7 +288,7 @@
 
   .why__intro {
     position: sticky;
-    top: calc(var(--header-h) + 38px + 2rem);
+    top: calc(var(--header-h) + 2rem);
   }
 }
 
@@ -659,7 +659,7 @@
 }
 
 .stage__count {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -726,7 +726,7 @@
 
 .stream-card__label {
   margin-top: 0.25rem;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1154,7 +1154,7 @@ ul.doc-list li::marker {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
   color: var(--ink);
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 700;
 }
 
@@ -1315,7 +1315,7 @@ ul.doc-list li::marker {
 
 .contact-card > a:not(.text-link) span {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
