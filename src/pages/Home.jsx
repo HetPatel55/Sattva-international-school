@@ -1,26 +1,24 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Phone, Check, Sparkles, PartyPopper, Flag } from 'lucide-react';
-import { school, stages, whyChoose, facilities, activities, festivals, houses, quotes } from '../data/site';
+import { useContent } from '../content/context';
 import usePageMeta from '../hooks/usePageMeta';
 import Reveal from '../components/Reveal';
 import SectionHead from '../components/SectionHead';
 import QuoteBand from '../components/QuoteBand';
 import CtaBand from '../components/CtaBand';
-
-const facts = [
-  { value: 'GSEB', label: 'Affiliated board' },
-  { value: 'JrKG – 12', label: 'All standards, one campus' },
-  { value: '2 mediums', label: 'English & Gujarati' },
-  { value: '2 streams', label: 'Science & Commerce' },
-  { value: '15:1', label: 'Student–teacher ratio' },
-];
+import HomeEvents from '../components/HomeEvents';
+import Photo from '../components/Photo';
+import { ratioOf } from '../data/forms';
+import Voices from '../components/Voices';
 
 const Home = () => {
+  const { school, home, stages, whyChoose, facilities, activities, festivals, houses, quotes } = useContent();
   usePageMeta(
     null,
     'SATTVA International School, Singarwa, Ahmedabad — GSEB school from JrKG to Std 12 in English and Gujarati medium, with Science and Commerce streams.',
   );
   const phone = school.phones[0];
+  const facts = home.facts;
 
   return (
     <>
@@ -28,16 +26,17 @@ const Home = () => {
       <section className="hero">
         <div className="container hero__grid">
           <div className="hero__text">
-            <p className="eyebrow">{school.board} school · Singarwa, Ahmedabad</p>
+            {home.eyebrow && <p className="eyebrow">{home.eyebrow}</p>}
             <h1 className="hero__title">
-              Rooted in values.
-              <br />
-              <em>Ready for tomorrow.</em>
+              {home.titleLine1}
+              {home.titleLine2 && (
+                <>
+                  <br />
+                  <em>{home.titleLine2}</em>
+                </>
+              )}
             </h1>
-            <p className="lead hero__lead">
-              GSEB education from JrKG to Std 12 in English and Gujarati medium, with Science and Commerce
-              streams — on a modern campus in Singarwa.
-            </p>
+            <p className="lead hero__lead">{home.lead}</p>
             <div className="hero__actions">
               <Link to="/admissions#enquiry" className="btn btn--primary">
                 Admission enquiry <ArrowRight size={18} aria-hidden="true" />
@@ -49,21 +48,15 @@ const Home = () => {
           </div>
 
           <figure className="hero__media">
-            <div className="hero__frame">
-              <img
-                src="/photos/campus-front.jpg"
-                srcSet="/photos/campus-front-800.jpg 800w, /photos/campus-front.jpg 1280w"
-                sizes="(min-width: 1024px) 600px, 100vw"
-                width="1280"
-                height="720"
-                alt="The SATTVA International School building in Singarwa, Ahmedabad"
-                fetchPriority="high"
-              />
+            <div className="hero__frame" style={{ aspectRatio: ratioOf(home.heroImage) }}>
+              <Photo image={home.heroImage} sizes="(min-width: 1024px) 600px, 100vw" fetchPriority="high" />
             </div>
             <figcaption className="hero__caption">Our campus in Singarwa, Ahmedabad</figcaption>
           </figure>
         </div>
       </section>
+
+      <HomeEvents />
 
       {/* ---------- Key facts ---------- */}
       <section className="facts" aria-label="Key facts">
@@ -150,14 +143,11 @@ const Home = () => {
       <section className="section">
         <div className="container campus">
           <Reveal className="campus__media">
-            <img
-              src="/photos/campus-garden.jpg"
-              srcSet="/photos/campus-garden-800.jpg 800w, /photos/campus-garden.jpg 1280w"
+            <Photo
+              image={home.campusImage}
               sizes="(min-width: 1024px) 560px, 100vw"
-              width="1280"
-              height="720"
-              alt="The SATTVA campus with its green wall, classrooms and playground"
               loading="lazy"
+              style={{ aspectRatio: ratioOf(home.campusImage) }}
             />
           </Reveal>
           <div className="campus__text">
@@ -226,8 +216,8 @@ const Home = () => {
               <span className="icon-badge"><Flag size={22} aria-hidden="true" /></span>
               <h3>House System</h3>
               <p>
-                Every student, in every standard, belongs to one of {houses.total} houses — including{' '}
-                {houses.named.join(' and ')} — building teamwork and healthy competition.
+                Every student, in every standard, belongs to one of {houses.total} houses — {houses.phrase} —
+                building teamwork and healthy competition.
               </p>
             </Reveal>
           </div>
@@ -240,6 +230,7 @@ const Home = () => {
         </div>
       </section>
 
+      <Voices />
       <QuoteBand {...quotes.home} />
       <CtaBand />
     </>

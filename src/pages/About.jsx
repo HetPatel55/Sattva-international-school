@@ -1,13 +1,20 @@
 import { Compass, Eye } from 'lucide-react';
-import { school, values, milestones, houses, quotes } from '../data/site';
+import { useContent } from '../content/context';
 import usePageMeta from '../hooks/usePageMeta';
+import Photo from '../components/Photo';
+import { ratioOf } from '../data/forms';
 import PageHero from '../components/PageHero';
 import SectionHead from '../components/SectionHead';
 import Reveal from '../components/Reveal';
 import QuoteBand from '../components/QuoteBand';
 import CtaBand from '../components/CtaBand';
 
+// Sets the Sanskrit word "sattva" in italics wherever the story mentions it.
+const withSattva = (text) =>
+  text.split(/(\bsattva\b)/).map((part, i) => (part === 'sattva' ? <em key={i}>sattva</em> : part));
+
 const About = () => {
+  const { school, about, home, values, milestones, houses, quotes } = useContent();
   usePageMeta('About Us', `About ${school.name} — a GSEB school in Singarwa, Ahmedabad, founded in ${school.founded}.`);
 
   return (
@@ -24,31 +31,15 @@ const About = () => {
           <div className="story__text">
             <SectionHead eyebrow="Our story" title="Why SATTVA?" />
             <Reveal>
-              <p>
-                In Sanskrit, <em>sattva</em> means purity, goodness and balance — qualities we try to nurture in
-                every child who walks through our gates.
-              </p>
-              <p>
-                We believe a good school does more than prepare children for examinations. It helps them become
-                confident, kind and curious people. That is why our students spend their days in comfortable,
-                air-conditioned classrooms and well-equipped labs, but also on stage, in karate and skating sessions,
-                in the art room and celebrating festivals together.
-              </p>
-              <p>
-                Today we teach every standard from JrKG to Std 12 under the GSEB, in both English and Gujarati
-                medium, with Science and Commerce streams in Std 11 and 12.
-              </p>
+              {about.story.map((para) => <p key={para}>{withSattva(para)}</p>)}
             </Reveal>
           </div>
           <Reveal className="story__media">
-            <img
-              src="/photos/campus-front.jpg"
-              srcSet="/photos/campus-front-800.jpg 800w, /photos/campus-front.jpg 1280w"
+            <Photo
+              image={home.heroImage}
               sizes="(min-width: 1024px) 560px, 100vw"
-              width="1280"
-              height="720"
-              alt="The SATTVA International School building"
               loading="lazy"
+              style={{ aspectRatio: ratioOf(home.heroImage) }}
             />
           </Reveal>
         </div>
@@ -61,18 +52,12 @@ const About = () => {
             <Reveal className="mv__card">
               <span className="icon-badge tone-green"><Compass size={22} aria-hidden="true" /></span>
               <h2>Our mission</h2>
-              <p>
-                To provide a caring, stimulating environment where every student can reach their potential,
-                develop strong moral character and grow into a responsible citizen.
-              </p>
+              <p>{about.mission}</p>
             </Reveal>
             <Reveal className="mv__card" delay={100}>
               <span className="icon-badge tone-blue"><Eye size={22} aria-hidden="true" /></span>
               <h2>Our vision</h2>
-              <p>
-                To be a school families trust — known for good teaching, strong values, safety, and a lifelong
-                love of learning in every child.
-              </p>
+              <p>{about.vision}</p>
             </Reveal>
           </div>
         </div>
@@ -123,7 +108,7 @@ const About = () => {
           <SectionHead
             eyebrow="House system"
             title={`${houses.total} houses, one school family`}
-            lead={`Every class in every standard is divided into the same ${houses.total} houses — including ${houses.named.join(' and ')}. The houses bring students of different ages together, building teamwork, leadership and healthy competition.`}
+            lead={`Every class in every standard is divided into the same ${houses.total} houses — ${houses.phrase}. The houses bring students of different ages together, building teamwork, leadership and healthy competition.`}
           />
           <Reveal className="houses__art" aria-hidden="true">
             <span className="tone-red" />

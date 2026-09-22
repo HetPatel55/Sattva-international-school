@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local backend (Cloudflare wrangler): simulated database/photos and secrets
+.wrangler
+.dev.vars
+.dev.vars.*
+# Content baked in at build time (scripts/fetch-content.mjs)
+src/data/published.json

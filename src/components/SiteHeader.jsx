@@ -1,12 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Menu, X, Phone, ArrowRight } from 'lucide-react';
-import { nav, school } from '../data/site';
+import { nav } from '../data/site';
+import { useContent } from '../content/context';
+import AnnouncementBar from './AnnouncementBar';
 
 const SiteHeader = () => {
+  const { school } = useContent();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const headerRef = useRef(null);
   const close = () => setOpen(false);
+
+  // Publish the header's real height (it grows when an announcement is on) so
+  // the phone menu and anchor scrolling sit exactly below it.
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el || !('ResizeObserver' in window)) return undefined;
+    const ro = new ResizeObserver(() => {
+      document.documentElement.style.setProperty('--header-total', `${el.offsetHeight}px`);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -29,7 +45,8 @@ const SiteHeader = () => {
   const phone = school.phones[0];
 
   return (
-    <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
+    <header ref={headerRef} className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
+      <AnnouncementBar onNavigate={close} />
       <div className="container header-bar">
         <Link to="/" className="brand" aria-label={`${school.name} — home`} onClick={close}>
           <img src="/brand/logo.png" alt={school.name} width="782" height="200" />

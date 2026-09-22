@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Check, Landmark, Languages, Split, FlaskConical, BarChart3, Laptop, ArrowRight } from 'lucide-react';
-import { school, stages, activities, quotes } from '../data/site';
+import { Check, Landmark, Languages, Split, Laptop, ArrowRight } from 'lucide-react';
+import { useContent } from '../content/context';
 import usePageMeta from '../hooks/usePageMeta';
 import PageHero from '../components/PageHero';
 import SectionHead from '../components/SectionHead';
@@ -8,32 +8,14 @@ import Reveal from '../components/Reveal';
 import QuoteBand from '../components/QuoteBand';
 import CtaBand from '../components/CtaBand';
 
-const overview = [
-  { icon: Landmark, tone: 'red', title: 'GSEB curriculum', text: `Affiliated with the ${school.boardFull}, with board examinations in Std 10 and Std 12.` },
-  { icon: Languages, tone: 'green', title: 'English & Gujarati medium', text: 'Every standard is offered in both mediums, so families can choose what suits their child.' },
-  { icon: Split, tone: 'blue', title: 'Science & Commerce', text: 'Two streams in Std 11 and 12, each with focused subjects and dedicated teachers.' },
-];
-
-const streams = [
-  {
-    name: 'Science',
-    icon: FlaskConical,
-    tone: 'purple',
-    subjects: ['Physics', 'Chemistry', 'Mathematics', 'Biology'],
-    text: 'Theory and regular practicals in our dedicated physics, chemistry and biology labs.',
-  },
-  {
-    name: 'Commerce',
-    icon: BarChart3,
-    tone: 'orange',
-    subjects: ['Accountancy', 'Economics', 'Statistics', 'Organisation of Commerce & Management'],
-    text: 'A strong grounding in business, finance and economics.',
-  },
-];
-
-const computerTopics = ['Computer fundamentals', 'History of computers', 'MS Word', 'MS Excel', 'Paint', 'HTML & CSS basics'];
-
 const Academics = () => {
+  const { school, stages, streams, computerTopics, activities, quotes } = useContent();
+  const overview = [
+    { icon: Landmark, tone: 'red', title: `${school.board} curriculum`, text: `Affiliated with the ${school.boardFull}, with board examinations in Std 10 and Std 12.` },
+    { icon: Languages, tone: 'green', title: 'English & Gujarati medium', text: 'Every standard is offered in both mediums, so families can choose what suits their child.' },
+    { icon: Split, tone: 'blue', title: 'Science & Commerce', text: 'Two streams in Std 11 and 12, each with focused subjects and dedicated teachers.' },
+  ];
+
   usePageMeta('Academics', `GSEB academics at ${school.name} — JrKG, SrKG, Balvatika, Std 1–12, Science and Commerce, English and Gujarati medium.`);
 
   return (

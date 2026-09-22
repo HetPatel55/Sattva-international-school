@@ -85,7 +85,7 @@ html {
   /* 97% of the browser default: scales all rem-based type and spacing down 3% */
   font-size: 97%;
   -webkit-text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--header-h) + 16px);
+  scroll-padding-top: calc(var(--header-total, var(--header-h)) + 16px);
 }
 
 body {

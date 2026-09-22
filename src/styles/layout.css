@@ -115,7 +115,7 @@
 /* ---------- Mobile menu ---------- */
 .mobile-menu {
   position: fixed;
-  inset: var(--header-h) 0 0 0;
+  inset: var(--header-total, var(--header-h)) 0 0 0;
   z-index: 99;
   display: flex;
   flex-direction: column;
@@ -630,6 +630,20 @@
   font-weight: 600;
 }
 
+/* Honeypot field: off-screen, never visible to people */
+.form__trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Turnstile takes no space unless Cloudflare needs the visitor to click */
+.turnstile:empty {
+  display: none;
+}
+
 .form__note {
   font-size: 0.82rem;
   text-align: center;
@@ -778,4 +792,41 @@
     flex-wrap: wrap;
     width: auto;
   }
+}
+
+/* ---------- Announcement strip (inside the sticky header) ---------- */
+.announce {
+  background: var(--clay-soft);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 0.88rem;
+}
+
+.announce__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem 0.6rem;
+  padding-block: 0.5rem;
+  text-align: center;
+}
+
+.announce__icon {
+  flex-shrink: 0;
+  color: var(--clay);
+}
+
+.announce p {
+  font-weight: 600;
+}
+
+.announce a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 700;
+  color: var(--clay);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

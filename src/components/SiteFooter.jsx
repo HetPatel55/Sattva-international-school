@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Clock, ExternalLink } from 'lucide-react';
-import { nav, school, stages } from '../data/site';
+import { nav } from '../data/site';
+import { useContent } from '../content/context';
 
 const SiteFooter = () => {
+  const { school, stages } = useContent();
   const year = new Date().getFullYear();
 
   return (
@@ -70,7 +72,7 @@ const SiteFooter = () => {
             </li>
             <li>
               <Clock size={18} aria-hidden="true" />
-              <span>Mon – Fri 8 AM – 6 PM · Sat 8 AM – 5 PM</span>
+              <span>{school.hoursSummary}</span>
             </li>
           </ul>
         </div>

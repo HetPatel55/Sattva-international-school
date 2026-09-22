@@ -1,16 +1,9 @@
 import { useState } from 'react';
 import { Send, CheckCircle2 } from 'lucide-react';
-import { school } from '../data/site';
-
-const STANDARDS = [
-  'JrKG', 'SrKG', 'Balvatika',
-  'Std 1', 'Std 2', 'Std 3', 'Std 4', 'Std 5', 'Std 6', 'Std 7', 'Std 8',
-  'Std 9', 'Std 10',
-  'Std 11 – Science', 'Std 11 – Commerce',
-  'Std 12 – Science', 'Std 12 – Commerce',
-];
-
-const SUBJECTS = ['Admission enquiry', 'Campus visit', 'School transport', 'Fees', 'Other'];
+import { ENQUIRY_EMAIL_ENDPOINT } from '../data/site';
+import { useContent } from '../content/context';
+import Turnstile from './Turnstile';
+import { STANDARDS, SUBJECTS } from '../data/forms';
 
 const EMPTY = { name: '', phone: '', email: '', child: '', standard: '', medium: '', subject: '', message: '' };
 
@@ -27,7 +20,11 @@ const validators = {
  * variant="admission" asks about the child; variant="general" is a plain contact form.
  */
 const EnquiryForm = ({ variant = 'admission' }) => {
+  const { school, settings, backend } = useContent();
   const isAdmission = variant === 'admission';
+  const [token, setToken] = useState('');
+  const [trap, setTrap] = useState(''); // hidden field only bots fill in
+  const [attempt, setAttempt] = useState(0);
   const required = isAdmission ? ['name', 'phone', 'standard'] : ['name', 'phone', 'subject', 'message'];
   const validated = [...required, 'email'];
 
@@ -84,16 +81,47 @@ const EnquiryForm = ({ variant = 'admission' }) => {
           Message: data.message,
         };
 
-    try {
-      const res = await fetch(school.enquiryEndpoint, {
+    const emailIt = () =>
+      fetch(ENQUIRY_EMAIL_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ ...payload, _template: 'table', _captcha: 'false' }),
       });
-      const json = await res.json().catch(() => ({}));
-      setStatus(res.ok && String(json.success) === 'true' ? 'sent' : 'failed');
+
+    try {
+      if (backend) {
+        // Saved to the admin panel's enquiry inbox; the email alert is a bonus.
+        const res = await fetch('/api/enquiries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            type: isAdmission ? 'admission' : 'general',
+            name: data.name.trim(),
+            phone: data.phone,
+            email: data.email.trim(),
+            child: data.child.trim(),
+            standard: data.standard,
+            medium: data.medium,
+            subject: data.subject,
+            message: data.message.trim(),
+            token,
+            website: trap,
+          }),
+        });
+        if (!res.ok) throw new Error('rejected');
+        // No email alerts from test submissions on this computer.
+        const local = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+        if (settings.emailAlerts && !local) emailIt().catch(() => {});
+        setStatus('sent');
+      } else {
+        const res = await emailIt();
+        const json = await res.json().catch(() => ({}));
+        setStatus(res.ok && String(json.success) === 'true' ? 'sent' : 'failed');
+      }
     } catch {
       setStatus('failed');
+      setToken('');
+      setAttempt((n) => n + 1); // fresh spam-check token for the retry
     }
   };
 
@@ -109,6 +137,8 @@ const EnquiryForm = ({ variant = 'admission' }) => {
           onClick={() => {
             setData(EMPTY);
             setErrors({});
+            setToken('');
+            setAttempt((n) => n + 1);
             setStatus('idle');
           }}
         >
@@ -183,9 +213,18 @@ const EnquiryForm = ({ variant = 'admission' }) => {
       {field('message', isAdmission ? 'Anything you would like to ask?' : 'Message',
         <textarea rows={4} {...inputProps('message')} />)}
 
+      {/* Honeypot: hidden from people and screen readers, bots tend to fill it */}
+      <div className="form__trap" aria-hidden="true">
+        <label>
+          Website
+          <input type="text" name="website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
+        </label>
+      </div>
+      {backend && <Turnstile onToken={setToken} resetKey={attempt} />}
+
       {status === 'failed' && (
         <p className="form__alert" role="alert">
-          Sorry, your enquiry could not be sent. Please try again, or call us on {school.phones[0].display}.
+          Sorry, your enquiry could not be sent. Please try again, or call us on {school.phones[0]?.display}.
         </p>
       )}
 

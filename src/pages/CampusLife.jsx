@@ -1,14 +1,15 @@
 import { Sparkles, PartyPopper, Flag, MapPin } from 'lucide-react';
-import { school, facilities, activities, festivals, houses } from '../data/site';
+import { useContent } from '../content/context';
 import usePageMeta from '../hooks/usePageMeta';
 import PageHero from '../components/PageHero';
 import SectionHead from '../components/SectionHead';
 import Reveal from '../components/Reveal';
 import CtaBand from '../components/CtaBand';
-
-const showcase = ['Dance performances', 'Karate demonstrations', 'Anchoring & hosting', 'Commentary'];
+import Photo from '../components/Photo';
+import { ratioOf } from '../data/forms';
 
 const CampusLife = () => {
+  const { school, home, facilities, activities, annualFunction: showcase, festivals, houses } = useContent();
   usePageMeta('Campus Life', `Facilities, activities, annual function, festivals and the house system at ${school.name}.`);
 
   return (
@@ -36,14 +37,11 @@ const CampusLife = () => {
             })}
           </ul>
           <Reveal className="photo-strip">
-            <img
-              src="/photos/campus-garden.jpg"
-              srcSet="/photos/campus-garden-800.jpg 800w, /photos/campus-garden.jpg 1280w"
+            <Photo
+              image={home.campusImage}
               sizes="(min-width: 1180px) 1180px, 100vw"
-              width="1280"
-              height="720"
-              alt="The SATTVA campus with its green wall, school buses and playground"
               loading="lazy"
+              style={{ aspectRatio: ratioOf(home.campusImage) }}
             />
           </Reveal>
         </div>
@@ -109,8 +107,7 @@ const CampusLife = () => {
             <span className="icon-badge"><Flag size={24} aria-hidden="true" /></span>
             <h2>House System</h2>
             <p>
-              Every class in every standard is divided into the same {houses.total} houses — including{' '}
-              {houses.named.join(' and ')}. Houses bring students of different ages together and build teamwork,
+              Every class in every standard is divided into the same {houses.total} houses — {houses.phrase}. Houses bring students of different ages together and build teamwork,
               leadership and healthy competition.
             </p>
           </Reveal>

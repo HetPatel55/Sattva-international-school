@@ -1,5 +1,5 @@
 import { Phone, Mail, MapPin, Clock, ExternalLink } from 'lucide-react';
-import { school } from '../data/site';
+import { useContent } from '../content/context';
 import usePageMeta from '../hooks/usePageMeta';
 import PageHero from '../components/PageHero';
 import SectionHead from '../components/SectionHead';
@@ -7,6 +7,7 @@ import Reveal from '../components/Reveal';
 import EnquiryForm from '../components/EnquiryForm';
 
 const Contact = () => {
+  const { school } = useContent();
   usePageMeta('Contact Us', `Call, email or visit ${school.name} in Singarwa, Ahmedabad.`);
   const { address } = school;
 

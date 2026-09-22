@@ -288,7 +288,7 @@
 
   .why__intro {
     position: sticky;
-    top: calc(var(--header-h) + 2rem);
+    top: calc(var(--header-total, var(--header-h)) + 2rem);
   }
 }
 
@@ -649,7 +649,7 @@
   border: 1px solid var(--line);
   border-top: 4px solid var(--tone);
   border-radius: var(--radius-lg);
-  scroll-margin-top: calc(var(--header-h) + 20px);
+  scroll-margin-top: calc(var(--header-total, var(--header-h)) + 20px);
 }
 
 .stage__head {
@@ -979,7 +979,7 @@
 }
 
 #enquiry {
-  scroll-margin-top: var(--header-h);
+  scroll-margin-top: var(--header-total, var(--header-h));
 }
 
 .enquiry {
@@ -1397,4 +1397,223 @@ ul.doc-list li::marker {
   gap: 1.25rem;
   max-width: 40rem;
   text-align: center;
+}
+
+/* ---------- Home: "Happening at SATTVA" events ---------- */
+.events-home {
+  padding-bottom: 2.5rem;
+}
+
+.events-home .section-head {
+  margin-bottom: 1.5rem;
+}
+
+/* Phones: posters swipe sideways; the next card peeks in to show there is more */
+.event-posts {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 84%;
+  gap: 1rem;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 0.25rem var(--gutter) 0.75rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
+}
+
+.event-posts::-webkit-scrollbar {
+  display: none;
+}
+
+.event-posts--single {
+  grid-auto-flow: row;
+  grid-auto-columns: auto;
+  margin-inline: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+.event-post {
+  display: grid;
+  align-content: start;
+  overflow: hidden;
+  scroll-snap-align: start;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+/* The whole poster is always visible: letterboxed on sand, never cropped */
+.event-post__media {
+  display: grid;
+  place-items: center;
+  background: var(--sand);
+}
+
+.event-post__media img {
+  width: 100%;
+  height: auto;
+  max-height: 460px;
+  object-fit: contain;
+}
+
+.event-post__body {
+  display: grid;
+  gap: 0.55rem;
+  justify-items: start;
+  align-content: start;
+  padding: 1.2rem 1.25rem 1.35rem;
+}
+
+.event-post__date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--clay);
+}
+
+.event-post__text {
+  color: var(--muted);
+}
+
+@media (min-width: 720px) {
+  .event-posts--single .event-post {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: stretch;
+  }
+
+  .event-posts--single .event-post__media {
+    height: 100%;
+  }
+
+  .event-posts--single .event-post__body {
+    align-content: center;
+    padding: 2rem 2.25rem;
+  }
+
+  .event-posts--single .event-post__body h3 {
+    font-size: clamp(1.4rem, 1.2vw + 1rem, 1.9rem);
+  }
+}
+
+@media (min-width: 900px) {
+  .event-posts:not(.event-posts--single) {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    margin-inline: 0;
+    padding: 0;
+    overflow: visible;
+  }
+}
+
+@media (min-width: 1024px) {
+  .events-home {
+    padding-bottom: 4rem;
+  }
+}
+
+/* ---------- Children's voices ---------- */
+.voices {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 84%;
+  gap: 1rem;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 0.25rem var(--gutter) 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
+}
+
+.voices::-webkit-scrollbar {
+  display: none;
+}
+
+.voice {
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+  padding: 1.5rem;
+  scroll-snap-align: start;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.voice__mark {
+  color: var(--clay);
+}
+
+.voice blockquote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.voice__by {
+  display: grid;
+  font-size: 0.92rem;
+}
+
+.voice__by span {
+  color: var(--muted);
+}
+
+@media (min-width: 900px) {
+  .voices {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    margin-inline: 0;
+    padding: 0;
+    overflow: visible;
+  }
+}
+
+/* ---------- Admissions open badge & album date ---------- */
+.admissions-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: #e7f4e8;
+  color: var(--green-dark);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.admissions-open span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 0 rgba(71, 165, 75, 0.6);
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  70% { box-shadow: 0 0 0 8px rgba(71, 165, 75, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(71, 165, 75, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admissions-open span {
+    animation: none;
+  }
+}
+
+.album-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  color: var(--clay);
 }

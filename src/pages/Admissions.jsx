@@ -1,5 +1,5 @@
 import { Phone, Mail, Clock, FileCheck2 } from 'lucide-react';
-import { school, stages, admissionSteps, documents, faqs, quotes } from '../data/site';
+import { useContent } from '../content/context';
 import usePageMeta from '../hooks/usePageMeta';
 import PageHero from '../components/PageHero';
 import SectionHead from '../components/SectionHead';
@@ -9,6 +9,7 @@ import Faq from '../components/Faq';
 import QuoteBand from '../components/QuoteBand';
 
 const Admissions = () => {
+  const { school, stages, admissions, admissionSteps, documents, faqs, quotes } = useContent();
   usePageMeta('Admissions', `Admissions at ${school.name} — JrKG, SrKG, Balvatika and Std 1–12. Send an enquiry or call +91 97144 81717.`);
   const phone = school.phones[0];
   const admissionsEmail = school.emails.find((e) => e.label === 'Admissions') ?? school.emails[0];
@@ -20,6 +21,12 @@ const Admissions = () => {
         title="Join the SATTVA family"
         lead="We welcome enquiries for every standard from JrKG to Std 12, in English and Gujarati medium."
       >
+        {admissions.open && (
+          <p className="admissions-open">
+            <span aria-hidden="true" />
+            Admissions open{admissions.academicYear ? ` for ${admissions.academicYear}` : ''}
+          </p>
+        )}
         <div className="hero-buttons">
           <a href="#enquiry" className="btn btn--primary">Send an enquiry</a>
           <a href={`tel:${phone.tel}`} className="btn btn--outline">
@@ -100,7 +107,7 @@ const Admissions = () => {
                   </li>
                   <li>
                     <Clock size={18} aria-hidden="true" />
-                    <span>Mon – Fri 8 AM – 6 PM, Sat 8 AM – 5 PM</span>
+                    <span>{school.hoursSummary}</span>
                   </li>
                 </ul>
               </Reveal>
