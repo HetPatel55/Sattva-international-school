@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Inbox, CalendarPlus, School, Download, FileSpreadsheet, ArrowRight, Loader2 } from 'lucide-react';
+import { Inbox, CalendarPlus, School, Images, Download, FileSpreadsheet, ArrowRight, Loader2 } from 'lucide-react';
 import { useAdmin, STATUS_LABELS, timeAgo, eventState } from './adminContext';
 import { download } from './api';
 import { today } from '../data/site';
@@ -114,6 +114,7 @@ const Dashboard = () => {
         <div className="adm-actions">
           <Link to="/admin/events/new" className="adm-action"><CalendarPlus size={20} aria-hidden="true" /> Add an event</Link>
           <Link to="/admin/enquiries?status=new" className="adm-action"><Inbox size={20} aria-hidden="true" /> Call new enquiries</Link>
+          <Link to="/admin/content/gallery" className="adm-action"><Images size={20} aria-hidden="true" /> Change gallery photos</Link>
           <Link to="/admin/content/school" className="adm-action"><School size={20} aria-hidden="true" /> Edit school details</Link>
           <button type="button" className="adm-action" onClick={() => download('/api/admin/enquiries/export')}>
             <FileSpreadsheet size={20} aria-hidden="true" /> Enquiries to Excel
